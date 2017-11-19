@@ -1,0 +1,33 @@
+# curl -u premysl.vyhnal@gmail.com   -d '{"scopes":["public_repo"],"note":"XXX token name XXX"}'   https://api.github.com/authorizations
+
+
+language: bash
+sudo: false
+install: true
+addons:
+  apt:
+    packages:
+    - lua5.1
+    - python2.7
+    - luarocks
+  
+script: "[[ -n $TRAVIS_TAG ]] && ./build.sh web || ./build.sh" # web only for tags
+deploy:
+  provider: releases
+  skip_cleanup: true
+  api_key:
+    # travis encrypt <token> 
+    secure: "GOUD9sTiOLKjEyJqYqkrJde+Gz+TKFIM7nT6t6ZDycuw9/zKOtOLAdI8eZbIgdR4g/Nl41tYQCucDOCDbguUI6KIdHCWxCpg18I5wtTWK7Lees6FtLL65JECu+eZryuK2SRWrWVlGiPg5KGAibJn1CD5xiLIcufBlTNl6xFjOqccRiA0OeqRKYmrP21rW26FSMF5D/fdbpOXDDlENzqeHCD+xrYkGFXDXrv7bjkAkV7e5RhugEis+0pY3DF+e4Kta/HQqZqOt2shXk3iUJaxAYs7oYgVDa/X1fWN46IaTyIJDFavuXUjb9MUl9yEO16g3emagNYH2Z2gz9Hmz6ojjhfrkTsSHuJxkgdKMQRHeRYw7OxF6+QUOyWO6QCxKF1QizYXRtOVmMRrtFpxriD/kKDmNeRmg8DLOU94VlcoFffIDksqcuR/VWITRzkJcjpNY17w1nF2sg8SAoxETGIAxBDnvfe3iBlVEgkPz3Gqw25WRc09EM3Xr3fK/1qtzyvInku79O8QYN5uHL5utIo8+UTe+iZkprR5ZyO5hOsfkbXFlEhgHFo2f238X+4UKS4WBZVUcjTmTTw40LLpLu8Hq8wuFZFoZATjEFu5q9Bsq4lWVcwxWV4kcI4TdPXxtaTLvkLgn/Qoie+EItRHgf28nO0QitNIPf7WhPC4N7pgPeA="
+  file:
+  - target/barrel.love
+  - target/barrel-win.zip
+  - target/barrel-web.zip
+  on:
+    tags: true
+    all_branches: true
+after_success:
+- "[[ -n $TRAVIS_TAG ]] && ./build.sh deploy $TRAVIS_REPO_SLUG"
+env:
+  global:
+   # travis encrypt GH_TOKEN=<token>
+  - secure: "J/x2Qsz1EQf7Mu4aAk2JHEc4Bl9qBjcEltD1W2pJEtpRo85BaeO9KRg/1Di5aOjzH6RJXIydcTiqiffkL8m11KzZWgHW4GTAwKQco85mdBdE0Bzn16k+7NYk6/7guKHhh8Jt5fntQreu476CwX5ek8nbM7hYiLndjLj1IkuoO8sSX79RglaOSJKRGsuIL+sOEEu/1FjqGTtNt/eHG5XqwaxmmGDGFi71fOXbhMoQO6fa/uqz5BTfk3OfNBTZMO59cGbXH5U61UY8q6/H7CxmNtDc2vgwauWXt1YKZ+1BEQag4WZRB3MdWiol+vouzR+4CTRBQ1iTwQWTQDwDu6D0UDD/nSeY/uYobu9jEowFeSG+UC4/2ve/6NKhcDQoyZf0dI1qaMZO9R6rYD31AFkbvgZJkuxc3ojZ6ssVhB+5AFrVtFGQYN0ceVzA5b0uMq9tnY8AGfW1gNPk1lvcRABnexQVzsVVuW3i3L/9jstTUuh57X9PQDTGy6AduGisiTrCTWAHDJmLH8zGyPyA/VYEYXVVXO32oPcV68dp6xQmvhbOqXys6zLWXssIzpOMZVa+EkzcN6FKmqyyQlEc4rXg5//Wbu/v4OVHEodTgwzzKd+ki6kVNlEVUDHmvqVSiGEAfLN5CJiXnZURIwED8SFGmwat6F+wDeo6ErQytz1Es2Y="
