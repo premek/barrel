@@ -1,3 +1,6 @@
+[![status](https://travis-ci.org/premek/barrel.svg)](https://travis-ci.org/premek/barrel)
+
+
 ## Barell
 An [#xkcdGameJam](https://itch.io/jam/xkcdgamejam) game based on the following comics:
 - https://xkcd.com/1
