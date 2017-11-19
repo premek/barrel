@@ -6,7 +6,7 @@ P="barrel"
 
 LV="0.10.2"
 LZ="https://bitbucket.org/rude/love/downloads/love-${LV}-win32.zip"
-
+# love.js has it's own love version built in
 
 ### clean
 
@@ -47,16 +47,12 @@ mkdir "target"
 cp -r src target
 cd target/src
 
-# compile .ink story into lua table so the runtime will not need lpeg dep.
-lua lib/pink/pink/pink.lua parse game.ink > game.lua
-
 zip -9 -r - . > "../${P}.love"
 cd -
 
 ### .exe
 
 if [ ! -f "target/love-win.zip" ]; then wget "$LZ" -O "target/love-win.zip"; fi
-#cp ~/downloads/love-0.10.1-win32.zip "target/love-win.zip"
 unzip -o "target/love-win.zip" -d "target"
 
 tmp="target/tmp/"
@@ -75,6 +71,7 @@ rm -r "$tmp"
 if [ "$1" == "web" ]; then
 
 cd target
+
 rm -rf love.js *-web*
 git clone https://github.com/TannerRogalsky/love.js.git
 cd love.js
@@ -82,8 +79,14 @@ git checkout 6fa910c2a28936c3ec4eaafb014405a765382e08
 git submodule update --init --recursive
 
 cd release-compatibility
-python ../emscripten/tools/file_packager.py game.data --preload ../../../target/src/@/ --js-output=game.js
-python ../emscripten/tools/file_packager.py game.data --preload ../../../target/src/@/ --js-output=game.js
+
+SW=../../src-web
+cp -r ../../src ../../src-web
+sed -i.bak 's/^.*window.resizable/-- &/g' $SW/conf.lua # https://github.com/TannerRogalsky/love.js/issues/56
+sed -i.bak 's/Game Title//g' index.html
+
+python ../emscripten/tools/file_packager.py game.data --preload $SW/@/ --js-output=game.js
+python ../emscripten/tools/file_packager.py game.data --preload $SW/@/ --js-output=game.js
 #yes, two times!
 # python -m SimpleHTTPServer 8000
 cd ../..

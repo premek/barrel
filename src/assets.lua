@@ -41,8 +41,6 @@ a.music.fadeout = 2
 a.music.current = nil
 
 a.music.play = function (i)
-  print(i)
-
   if i ~= 'stop' and (not a.music[i] or a.music[i]:isPlaying()) then return end
   local out = (a.music.current and a.music.current:isPlaying()) and a.music.fadeout or 0
   Timer.tween(out, a.music, {volume=0}, 'out-quad', function ()
